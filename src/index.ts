@@ -1,0 +1,1 @@
+export { createPromiseMixin } from '@/mixin'

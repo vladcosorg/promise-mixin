@@ -1,0 +1,58 @@
+{
+  "name": "promise-supplement",
+  "version": "1.0.0",
+  "description": "oclif example Hello World CLI",
+  "author": "chetzof @chetzof",
+  "prettier": "chetzof-lint-config/prettier/.prettierrc.js",
+  "homepage": "https://github.com/chetzof/link-and-tink",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": "chetzof/link-and-tink",
+  "files": [],
+  "dependencies": {
+    "chetzof-lint-config": "^1.0.12",
+    "debug": "^4.3.4",
+    "tsconfig-paths": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "eslint-define-config": "^1.16.0",
+    "tsc-alias": "^1.8.3",
+    "type-fest": "^3.6.1",
+    "typescript": "^5.0.2",
+    "vite-tsconfig-paths": "^4.0.7",
+    "vitest": "0.29.3"
+  },
+  "scripts": {
+    "build": "shx rm -rf dist; tsc; tsc-alias",
+    "watch": "tsc -w",
+    "lint": "npm run lint:tsc; npm run lint:eslint",
+    "fix": "npm run fix:prettier . && npm run fix:eslint .",
+    "fix:prettier": "prettier --write --ignore-unknown",
+    "fix:eslint": "NODE_ENV=production  eslint --fix",
+    "lint:eslint": "NODE_ENV=production  eslint .",
+    "lint:tsc": "tsc --noEmit",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "prepack": "npm run build && oclif manifest && oclif readme",
+    "test": "vitest",
+    "preparee": "husky install",
+    "semantic-release": "semantic-release",
+    "lint-staged:test": "vitest related --run"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "bugs": "https://github.com/chetzof/linktink/issues",
+  "keywords": [
+    "oclif"
+  ],
+  "types": "dist/index.d.ts",
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
