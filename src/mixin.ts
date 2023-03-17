@@ -1,18 +1,3 @@
-import * as util from 'node:util'
-
-function index(...data) {
-  console.log(
-    ...data.map((row) =>
-      util.inspect(row, {
-        showHidden: true,
-        colors: true,
-        showProxy: true,
-        depth: 10,
-      }),
-    ),
-  )
-}
-
 // eslint-disable-next-line unicorn/prefer-top-level-await,@typescript-eslint/no-empty-function,@typescript-eslint/no-unsafe-assignment
 const nativePromisePrototype: Promise<unknown> = (async () => {})().constructor
   .prototype
