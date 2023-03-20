@@ -4,10 +4,10 @@
   "description": "oclif example Hello World CLI",
   "author": "chetzof @chetzof",
   "prettier": "chetzof-lint-config/prettier/.prettierrc.js",
-  "homepage": "https://github.com/chetzof/link-and-tink",
+  "homepage": "https://github.com/chetzof/promise-supplement",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "chetzof/link-and-tink",
+  "repository": "chetzof/promise-supplement",
   "files": [],
   "dependencies": {},
   "devDependencies": {
