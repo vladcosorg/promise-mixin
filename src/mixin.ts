@@ -5,6 +5,12 @@ const descriptors = ['then', 'catch', 'finally'].map((property) => [
   property,
   Reflect.getOwnPropertyDescriptor(nativePromisePrototype, property),
 ]) as Array<[string, TypedPropertyDescriptor<() => Promise<unknown>>]>
+// eslint-disable-next-line no-use-before-define
+type MixinPromise<PromiseValue, Mixin extends object> = AugmentedPromise<
+  PromiseValue,
+  Mixin
+> &
+  Mixin
 
 interface AugmentedPromise<T, O extends object> extends Promise<T> {
   then: <TResult1 = T, TResult2 = never>(
@@ -26,12 +32,6 @@ interface AugmentedPromise<T, O extends object> extends Promise<T> {
   ) => AugmentedPromise<T | TResult, O>
   finally: (onfinally?: (() => void) | null | undefined) => MixinPromise<T, O>
 }
-
-type MixinPromise<PromiseValue, Mixin extends object> = AugmentedPromise<
-  PromiseValue,
-  Mixin
-> &
-  Mixin
 
 function bindPromiseMethods<T, P extends Promise<T>, O extends object>(
   promise: P,
