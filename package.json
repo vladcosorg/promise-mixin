@@ -7,7 +7,10 @@
   "homepage": "https://github.com/chetzof/promise-supplement",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "chetzof/promise-supplement",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chetzof/promise-supplement.git"
+  },
   "files": [],
   "dependencies": {},
   "devDependencies": {
