@@ -4,7 +4,7 @@
 </h1>
 
 <h6 align="center">
-Develop local dependencies in your projects
+Promise enrichment tools
 </h6>
 <p align="center">
   <a href="https://github.com/medusajs/medusa/blob/master/LICENSE">
