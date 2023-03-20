@@ -11,7 +11,9 @@
     "type": "git",
     "url": "https://github.com/chetzof/promise-supplement.git"
   },
-  "files": [],
+  "files": [
+    "dist/*"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^18.15.5",
