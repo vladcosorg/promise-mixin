@@ -1,6 +1,7 @@
 {
   "extends": "chetzof-lint-config/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
     "baseUrl": "./",
     "module": "commonjs",
     "target": "es2019",
