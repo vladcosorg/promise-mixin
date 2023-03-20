@@ -27,7 +27,7 @@
     "tsconfig-paths": "^4.1.2"
   },
   "scripts": {
-    "build": "shx rm -rf dist; tsc; tsc-alias",
+    "build": "tsc; tsc-alias",
     "watch": "tsc -w",
     "lint": "npm run lint:tsc; npm run lint:eslint",
     "fix": "npm run fix:prettier . && npm run fix:eslint .",
@@ -35,7 +35,6 @@
     "fix:eslint": "NODE_ENV=production  eslint --fix",
     "lint:eslint": "NODE_ENV=production  eslint .",
     "lint:tsc": "tsc --noEmit",
-    "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "npm run build",
     "test": "vitest",
     "preparee": "husky install",
