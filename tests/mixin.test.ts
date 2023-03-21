@@ -31,7 +31,7 @@ it('must preserve the mixin when calling then() on a promise', () => {
 
 describe('execa', () => {
   it('must preserve all prototype chain and its methods', () => {
-    const object = execa('sleep')
+    const object = execa('ls')
     const promise = object.then()
     const mi = createPromiseMixin(promise, object)
     expect(mi.killed).toBe(false)
