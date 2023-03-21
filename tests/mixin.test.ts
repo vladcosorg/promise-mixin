@@ -1,6 +1,7 @@
-import { expect, it } from 'vitest'
+import execa = require('execa')
+import { describe, expect, it } from 'vitest'
 
-import { createPromiseMixin } from '../src'
+import { createPromiseMixin } from '../src/mixin'
 
 const originalPromise = new Promise<boolean>((resolve) => {
   setTimeout(() => {
@@ -26,4 +27,13 @@ it('must preserve the mixin when calling then() on a promise', () => {
   const promise = createPromiseMixin(originalPromise, objectMixin)
   // eslint-disable-next-line promise/valid-params
   expect(promise.then().foo).toBe('bar')
+})
+
+describe('execa', () => {
+  it.only('must preserve all prototype chain and its methods', () => {
+    const object = execa('sleep')
+    const promise = object.then()
+    const mi = createPromiseMixin(promise, object)
+    expect(mi.killed).toBe(false)
+  })
 })
