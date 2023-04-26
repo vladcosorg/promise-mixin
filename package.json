@@ -46,7 +46,7 @@
   "engines": {
     "node": ">=16"
   },
-  "bugs": "https://github.com/chetzof/linktink/issues",
+  "bugs": "https://github.com/chetzof/promise-mixin/issues",
   "keywords": [
     "oclif"
   ],
