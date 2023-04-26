@@ -1,7 +1,7 @@
 import execa = require('execa')
 import { describe, expect, it } from 'vitest'
 
-import { createPromiseMixin } from '../src/mixin'
+import { createPromiseMixin } from '../src'
 
 const originalPromise = new Promise<boolean>((resolve) => {
   setTimeout(() => {
@@ -27,6 +27,13 @@ it('must preserve the mixin when calling then() on a promise', () => {
   const promise = createPromiseMixin(originalPromise, objectMixin)
   // eslint-disable-next-line promise/valid-params
   expect(promise.then().foo).toBe('bar')
+})
+
+it('must return same result when called repeatedly', async () => {
+  const promise = createPromiseMixin(originalPromise, objectMixin)
+
+  await expect(promise).resolves.toBe(true)
+  await expect(promise).resolves.toBe(true)
 })
 
 describe('execa', () => {

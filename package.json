@@ -1,15 +1,15 @@
 {
-  "name": "promise-supplement",
+  "name": "promise-mixin",
   "version": "1.0.0",
   "description": "oclif example Hello World CLI",
   "author": "chetzof @chetzof",
   "prettier": "chetzof-lint-config/prettier/.prettierrc.js",
-  "homepage": "https://github.com/chetzof/promise-supplement",
+  "homepage": "https://github.com/chetzof/promise-mixin",
   "license": "MIT",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chetzof/promise-supplement.git"
+    "url": "https://github.com/chetzof/promise-mixin.git"
   },
   "files": [
     "dist/*"

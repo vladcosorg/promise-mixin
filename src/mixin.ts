@@ -33,19 +33,20 @@ type MixinPromise<PromiseValue, Mixin extends object> = AugmentedPromise<
   Mixin
 function bindPromiseMethods<T, P extends Promise<T>, O extends object>(
   promise: P,
-  object: O,
+  prototype: O,
 ): MixinPromise<T, O> {
+  const target = Object.create(prototype) as O
   for (const [property, descriptor] of descriptors) {
     if (!descriptor.value) {
       continue
     }
 
-    Reflect.defineProperty(object, property, {
+    Reflect.defineProperty(target, property, {
       ...descriptor,
       value: descriptor.value.bind(promise),
     })
   }
-  return object as MixinPromise<T, O>
+  return target as MixinPromise<T, O>
 }
 
 export function createPromiseMixin<T, P extends Promise<T>, O extends object>(
