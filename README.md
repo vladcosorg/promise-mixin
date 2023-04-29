@@ -4,7 +4,7 @@
 </h1>
 
 <h6 align="center">
-A handy and fast promise helper that 
+A handy and flexible helper that lets you augment the promise object in a safe and reliable way
 </h6>
 <p align="center">
     <img src="https://img.shields.io/github/checks-status/chetzof/promise-mixin/master" alt="Medusa is released under the MIT license." />
@@ -14,112 +14,171 @@ A handy and fast promise helper that
     <img src="https://img.shields.io/github/checks-status/chetzof/promise-mixin/master" alt="Medusa is released under the MIT license." />
 </p>
 
-
 ## Installation
 
 ```bash
-npm create astro@latest
-```
-
-You can also install Astro **manually** by running this command instead:
-
-```bash
-npm install --save-dev astro
+npm i promise-mixin
 ```
 
 ## Usage
 
-```bash
-$ ncc <cmd> <opts>
-```
+Note that the following use-case is simplified and regular `class ExtendedPromise extends Promise` is recommended instead.
 
-Eg:
+```typescript
+import { createPromiseMixin } from 'promise-mixin'
+const typicalPromise = new Promise((resolve) => resolve(true))
+const externalPromise = createPromiseMixin(typicalPromise, {
+  killed: () => true,
+})
 
-```bash
-$ ncc build input.js -o dist
-```
-
-If building an `.mjs` or `.js` module inside a `"type": "module"` [package boundary](https://nodejs.org/dist/latest-v16.x/docs/api/packages.html#packages_package_json_and_file_extensions), an ES module output will be created automatically.
-
-Outputs the Node.js compact build of `input.js` into `dist/index.js`.
-
-> Note: If the input file is using a `.cjs` extension, then so will the corresponding output file.
-> This is useful for packages that want to use `.js` files as modules in native Node.js using
-> a `"type": "module"` in the package.json file.
-
-#### Commands:
-
-```
-  build <input-file> [opts]
-  run <input-file> [opts]
-  cache clean|dir|size
-  help
-  version
-```
-
-#### Options:
-
-```
-  -o, --out [dir]          Output directory for build (defaults to dist)
-  -m, --minify             Minify output
-  -C, --no-cache           Skip build cache population
-  -s, --source-map         Generate source map
-  -a, --asset-builds       Build nested JS assets recursively, useful for
-                           when code is loaded as an asset eg for workers.
-  --no-source-map-register Skip source-map-register source map support
-  -e, --external [mod]     Skip bundling 'mod'. Can be used many times
-  -q, --quiet              Disable build summaries / non-error outputs
-  -w, --watch              Start a watched build
-  -t, --transpile-only     Use transpileOnly option with the ts-loader
-  --v8-cache               Emit a build using the v8 compile cache
-  --license [file]         Adds a file containing licensing information to the output
-  --stats-out [file]       Emit webpack stats as json to the specified output file
-  --target [es]            ECMAScript target to use for output (default: es2015)
-                           Learn more: https://webpack.js.org/configuration/target
-  -d, --debug              Show debug logs
-```
-
-### Execution Testing
-
-For testing and debugging, a file can be built into a temporary directory and executed with full source maps support with the command:
-
-```bash
-$ ncc run input.js
+console.log(externalPromise.killed()) // outputs true
 ```
 
 # Motivation
 
-This is yet another replacement for the `npm link`, which has tons of issues and works only for trivial cases. This is
-also a replacement for other replacement packages which are either not maintained or a very clunky to use.
+This package was created to solve the cases when you need support for
+ad-hoc extension of javascript objects and/or you don't have control
+over the resulting promise object.
+For example when the resulting promise is returned from a library.
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/link-and-tink.svg)](https://npmjs.org/package/link-and-tink)
-[![Downloads/week](https://img.shields.io/npm/dw/link-and-tink.svg)](https://npmjs.org/package/link-and-tink)
-[![License](https://img.shields.io/npm/l/link-and-tink.svg)](https://github.com/oclif/hello-world/blob/main/package.json)
+In all other cases I recommend using the tranditional inherintance via the `extends` keyword.
 
-# Features
+# Use-cases
 
-- Survives npm install
-- All production dependencies and peer dependencies are installed along the main package (unlike npm link)
-- Automatic reinstall of the changed dependencies
-- No transitive dependencies
-- Works with CRA, Vite, etc. hot reloading / hot module replacement (HMR)
-- Fully automatic syncronisation between your project and linked dependency
-- No 3rd-party config options in your package.json
-- Out of the box support for TypeScript transpiler and other watchers
-- Bidirectional sync
+###### Case 1: Fixing an augmented promise from an external library
 
-# Usage
+Problem:
 
-# To Do
+```typescript
+const childProcessPromise = execa('ls') // Returns augmented Promise object
+console.log(childProcessPromise)
 
-- Support other than NPM package managers
+/*
+ChildProcess {
+  connected: false,
+  signalCode: null,
+  exitCode: null,
+  killed: false,
+ ...
+  // note that it also got native Promise prototype methods
+  then: [Function],
+  catch: [Function],
+  finally: [Function],
+}
+*/
+const newChildPromise = childProcessPromise.then((result) => undefined) // do something
+console.log(newChildPromise) // all the augmented methods connected, signalCode, etc. are lost
+/*
+Promise {
+  then: [Function],
+  catch: [Function],
+  finally: [Function],
+}
+*/
+```
 
-# Recipes
+Solution:
 
-#Comparison table
+```typescript
+import { createPromiseMixin } from 'promise-mixin'
+const childProcessPromise = execa('ls')
+const properMixinPromise = createPromiseMixin(
+  childProcessPromise.then(),
+  object,
+) // fixing the protype chain
 
-https://docs.npmjs.com/cli/v9/commands/npm-link
-https://github.com/wclr/yalc
-https://github.com/privatenumber/link
-https://hirok.io/posts/avoid-npm-link
+const newChildPromise = childProcessPromise.then((result) => undefined) // do something and return new promise
+console.log(newChildPromise) // all the augmented methods connected, signalCode, etc. are preserved
+/*
+ChildProcess {
+  connected: false,
+  signalCode: null,
+  exitCode: null,
+  killed: false,
+ ...
+  then: [Function],
+  catch: [Function],
+  finally: [Function],
+}
+*/
+```
+
+###### Case 2: Adding an ad-hoc method or property onto a promise object (and preserving it )
+
+```typescript
+import { createPromiseMixin } from 'promise-mixin'
+const typicalPromise = promiseFromAnExternalLibrary() //
+const externalPromise = createPromiseMixin(typicalPromise, {
+  onAbortListener: (listener: () => void) => undefined, // logic,
+})
+
+externalPromise.onAbortListener(() => showNotification())
+
+// promise chaining works as well
+
+externalPromise
+  .then()
+  /*a new promise is created, the mixin methods are still there */
+  .onAbortListener(() => showNotification())
+externalPromise
+  .catch()
+  /*a new promise is created, the mixin methods are still there*/
+  .onAbortListener(() => showNotification())
+externalPromise
+  .finally()
+  /*a new promise is created, the mixin methods are still there*/
+  .onAbortListener(() => showNotification())
+```
+
+###### Case 3: Adding the abort method right on the promise object
+
+```typescript
+function runFetch(): Promise<string> & { abort: () => void } {
+  const controller = new AbortController()
+  const signal = controller.signal
+  return createPromiseMixin(
+    fetch(url, { signal })
+      .then((response) => {
+        console.log('Download complete', response)
+      })
+      .catch((err) => {
+        console.error(`Download error: ${err.message}`)
+      }),
+    { abort: () => controller.abort() },
+  )
+}
+
+const fetchPromise = runFetch()
+
+eventManager.on('immediate-exit', () => fetchPromise.abort())
+
+await fetchPromise
+```
+
+# Warning: Do not use ASYNC when returning the augmented promise
+
+Right:
+
+```typescript
+function runFetch() {
+  return createPromiseMixin(
+    ...
+  )
+}
+
+console.log(runFetch()) // Promise<string> & { abort: () => void }
+```
+
+Wrong:
+
+```typescript
+async function runFetch() {
+  return createPromiseMixin(
+    ...
+  )
+}
+
+console.log(runFetch()) // Promise<string>
+```
+
+When using async, the the augmented Promises will be wrapped with the regular Promise object.

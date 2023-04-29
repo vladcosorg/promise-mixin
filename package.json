@@ -1,7 +1,7 @@
 {
   "name": "promise-mixin",
   "version": "1.0.0",
-  "description": "oclif example Hello World CLI",
+  "description": "A handy and flexible helper that lets you augment the promise object in a safe and reliable way",
   "author": "chetzof @chetzof",
   "prettier": "chetzof-lint-config/prettier/.prettierrc.js",
   "homepage": "https://github.com/chetzof/promise-mixin",
